@@ -2,7 +2,11 @@
 <html <?php language_attributes(); ?>>
 <head>
 	<title>
-	<?php echo wp_title( ' | ', false, right ); bloginfo( 'name' );?>
+        <?php if(is_front_page()) {?>
+            <?php bloginfo('name'); ?>
+        <?php } else { ?>
+            <?php echo wp_title( ' | ', false, right );?>
+        <?php } ?>
 	</title>
 	<!-- While these meta keywords are not ideal and the meta description could be better, they are better than nothing -->
 	<meta name="keywords" content="<?php bloginfo( 'name' ); echo ' , '; bloginfo( 'description' ); ?>" />
@@ -19,3 +23,4 @@
 </head>
 <body <?php body_class(); ?>>
 <div id="wrapper">
+    <?php include('mainnav.php'); ?>

@@ -1,6 +1,9 @@
 <?php
 // https://github.com/jaredatch/Custom-Metaboxes-and-Fields-for-WordPress/wiki/Field-Types
 
+//'show_on' => array( 'key' => 'id', 'value' => array( 50, 24 ) ),
+//'show_on' => array( 'key' => 'child_of', 'value' => array( 461 ) ),
+
 function client_metaboxes( $meta_boxes ) {
 	$prefix = '_cmb_'; // Prefix for all fields
 
