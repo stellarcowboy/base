@@ -23,7 +23,7 @@
 		// Load jQuery
 		if ( !is_admin() ) {
 			wp_deregister_script('jquery');
-		   wp_register_script('jquery', ('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'), false);
+		   wp_register_script('jquery', ('http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js'), false);
 		   wp_enqueue_script('jquery');
 		
 			// Your Scripts
@@ -91,7 +91,7 @@
         //remove_meta_box('dashboard_right_now', 'dashboard', 'core');
         remove_meta_box('dashboard_recent_comments', 'dashboard', 'core');
         remove_meta_box('dashboard_incoming_links', 'dashboard', 'core');
-        //remove_meta_box('dashboard_plugins', 'dashboard', 'core');
+        remove_meta_box('dashboard_plugins', 'dashboard', 'core');
         //remove_meta_box('dashboard_quick_press', 'dashboard', 'core');
         //remove_meta_box('dashboard_recent_drafts', 'dashboard', 'core');
         remove_meta_box('dashboard_primary', 'dashboard', 'core');
