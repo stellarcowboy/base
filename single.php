@@ -48,7 +48,7 @@
 				</div><!-- #post-## -->
 
 				<div class="newer-older">
-					<div class="older">
+					<div class="older-test">
 						<p>
 							<?php next_post_link('%link', 'Previous Post&nbsp;&raquo;') ?>
 						</p>
