@@ -43,10 +43,10 @@
 		
 	<div class="newer-older">
 		<div class="older">
-			<?php next_posts_link('Previous Posts <span></span>'); ?>
+			<?php previous_posts_link('<span></span> Previous Posts'); ?>
 		</div><!--.older-->
 		<div class="newer">
-			<?php previous_posts_link('<span></span> Newer posts'); ?>
+			<?php next_posts_link('Newer posts <span></span>'); ?>
 		</div><!--.older-->
 	</div><!--.newer-older-->
 
