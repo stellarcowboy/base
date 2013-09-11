@@ -50,12 +50,12 @@
 				<div class="newer-older">
 					<div class="older">
 						<p>
-							<?php next_post_link('%link', 'Previous Post&nbsp;&raquo;') ?>
+							<?php previous_post_link('%link', '&laquo;&nbsp;Previous Post') ?>
 						</p>
 					</div><!--.older-->
 					<div class="newer">
 						<p>
-							<?php previous_post_link('%link', '&laquo;&nbsp;Newer post') ?>
+							<?php next_post_link('%link', 'Newer post&nbsp;&raquo;') ?>
 						</p>
 					</div><!--.newer-->
 				</div><!--.newer-older-->
