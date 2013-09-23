@@ -34,7 +34,7 @@
 
 		}
 	}
-	add_action('init','add_scripts');
+	add_action('wp_enqueue_scripts','add_scripts');
 
 /*
 // ---------
