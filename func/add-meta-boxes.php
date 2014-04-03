@@ -1,9 +1,27 @@
 <?php
-// https://github.com/jaredatch/Custom-Metaboxes-and-Fields-for-WordPress/wiki/Field-Types
+
+/**
+ * Include and setup custom metaboxes and fields.
+ *
+ * @category YourThemeOrPlugin
+ * @package  Metaboxes
+ * @license  http://www.opensource.org/licenses/gpl-license.php GPL v2.0 (or later)
+ * @link     https://github.com/webdevstudios/Custom-Metaboxes-and-Fields-for-WordPress
+ */
+ 
+// https://github.com/webdevstudios/Custom-Metaboxes-and-Fields-for-WordPress/wiki/Field-Types
 
 //'show_on' => array( 'key' => 'id', 'value' => array( 50, 24 ) ),
 //'show_on' => array( 'key' => 'child_of', 'value' => array( 461 ) ),
 
+add_filter( 'cmb_meta_boxes', 'client_metaboxes' );
+
+/**
+ * Define the metabox and field configurations.
+ *
+ * @param  array $meta_boxes
+ * @return array
+ */
 function client_metaboxes( $meta_boxes ) {
 	$prefix = '_cmb_'; // Prefix for all fields
 
@@ -54,10 +72,11 @@ $meta_boxes[] = array(
 
 	return $meta_boxes;
 }
-add_filter( 'cmb_meta_boxes', 'client_metaboxes' );
 
-// Initialize the metabox class
 add_action( 'init', 'be_initialize_cmb_meta_boxes', 9999 );
+/**
+ * Initialize the metabox class.
+ */
 function be_initialize_cmb_meta_boxes() {
 	if ( !class_exists( 'cmb_Meta_Box' ) ) {
 		require_once( 'cmb/init.php' );
