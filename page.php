@@ -2,7 +2,7 @@
 
 <div id="content">
 	<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-		<div id="post-<?php the_ID(); ?>" <?php post_class('page'); ?>>
+		<div id="post-<?php the_ID(); ?>">
 
 			<h1><?php the_title(); ?></h1>
 
@@ -10,7 +10,7 @@
 				<?php the_content(); ?>
 			</div><!--#pageContent -->
 
-		</div><!--#post-# .post-->
+		</div><!--#post-#-->
 
 	<?php endwhile; ?>
 </div><!--#content-->
