@@ -34,7 +34,7 @@ Last updated: 09-23-2013
 ================================================================================
  */
 
-* {margin:0; padding:0; box-sizing: border-box;}
+* {margin:0; padding:0; box-sizing: border-box; -moz-box-sizing: border-box;}
 
 /* =============================================================================
    HTML5 display definitions
