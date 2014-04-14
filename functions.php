@@ -62,7 +62,7 @@
 	// Sidebar Widget
 	// Location: the sidebar
 	register_sidebar(array('name'=>'Sidebar',
-		'before_widget' => '<div id="widget-sidebar" class="widget-area"><ul>',
+		'before_widget' => '<div id="%1$s" class="widget %2$s"><ul>',
 		'after_widget' => '</ul></div>',
 		'before_title' => '<h3>',
 		'after_title' => '</h3>',
