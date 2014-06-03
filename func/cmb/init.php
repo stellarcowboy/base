@@ -1,12 +1,13 @@
 <?php
 /*
-Script Name: 	Custom Metaboxes and Fields
-Contributors: 	Andrew Norcross (@norcross / andrewnorcross.com)
-				Jared Atchison (@jaredatch / jaredatchison.com)
-				Bill Erickson (@billerickson / billerickson.net)
-				Justin Sternberg (@jtsternberg / dsgnwrks.pro)
-Description: 	This will create metaboxes with custom fields that will blow your mind.
-Version: 		1.1.1
+Script Name:  Custom Metaboxes and Fields
+Contributors: WebDevStudios (@webdevstudios / webdevstudios.com)
+              Justin Sternberg (@jtsternberg / dsgnwrks.pro)
+              Jared Atchison (@jaredatch / jaredatchison.com)
+              Bill Erickson (@billerickson / billerickson.net)
+              Andrew Norcross (@norcross / andrewnorcross.com)
+Description:  This will create metaboxes with custom fields that will blow your mind.
+Version:      1.2.0
 */
 
 /**
@@ -54,7 +55,7 @@ class cmb_Meta_Box {
 	 * @var   string
 	 * @since 1.0.0
 	 */
-	const CMB_VERSION = '1.1.1';
+	const CMB_VERSION = '1.2.0';
 
 	/**
 	 * Metabox Config array
@@ -115,6 +116,13 @@ class cmb_Meta_Box {
 	 * @since 1.0.0
 	 */
 	protected static $is_enqueued = false;
+
+	/**
+	 * Whether CMB nonce has been added to the page. (oly add once)
+	 * @var   bool
+	 * @since 1.2.0
+	 */
+	protected static $nonce_added = false;
 
 	/**
 	 * Type of object specified by the metabox Config
@@ -247,10 +255,10 @@ class cmb_Meta_Box {
 			   wp_register_script( 'iris', admin_url( 'js/iris.min.js' ), array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), self::CMB_VERSION );
 		   	wp_register_script( 'wp-color-picker', admin_url( 'js/color-picker.min.js' ), array( 'iris' ), self::CMB_VERSION );
 				wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-					'clear' => __( 'Clear' ),
+					'clear'         => __( 'Clear' ),
 					'defaultString' => __( 'Default' ),
-					'pick' => __( 'Select Color' ),
-					'current' => __( 'Current Color' ),
+					'pick'          => __( 'Select Color' ),
+					'current'       => __( 'Current Color' ),
 				) );
 			}
 		} else {
@@ -277,6 +285,7 @@ class cmb_Meta_Box {
 			'ajaxurl'         => admin_url( '/admin-ajax.php' ),
 			'up_arrow'        => '[ ↑ ]&nbsp;',
 			'down_arrow'      => '&nbsp;[ ↓ ]',
+			'check_toggle'    => __( 'Select / Deselect All', 'cmb' ),
 		) ) );
 
 		wp_register_style( 'cmb-styles', CMB_META_BOX_URL . 'style'. $min .'.css', $styles );
@@ -374,9 +383,14 @@ class cmb_Meta_Box {
 		// Set/get ID
 		$object_id = self::set_object_id( $object_id ? $object_id : self::get_object_id() );
 
+		// Add nonce only once per page.
+		if ( ! self::$nonce_added ) {
+			wp_nonce_field( self::nonce(), 'wp_meta_box_nonce', false, true );
+			self::$nonce_added = true;
+		}
+
 		// Use nonce for verification
 		echo "\n<!-- Begin CMB Fields -->\n";
-		wp_nonce_field( self::nonce(), 'wp_meta_box_nonce', false, true );
 		do_action( 'cmb_before_table', $meta_box, $object_id, $object_type );
 		echo '<table class="form-table cmb_metabox">';
 
@@ -439,7 +453,7 @@ class cmb_Meta_Box {
 			self::render_group_row( $field_group, $remove_disabled );
 		}
 
-		echo '<tr><td><p class="add-row"><button data-selector="', $field_group->id() ,'_repeat" class="add-group-row button">'. $field_group->options( 'add_button' ) .'</button></p></td></tr>';
+		echo '<tr><td><p class="add-row"><button data-selector="', $field_group->id() ,'_repeat" data-grouptitle="', $field_group->options( 'group_title' ) ,'" class="add-group-row button">'. $field_group->options( 'add_button' ) .'</button></p></td></tr>';
 
 		echo '</table></td></tr>';
 
@@ -451,6 +465,15 @@ class cmb_Meta_Box {
 		<tr class="repeatable-grouping" data-iterator="'. $field_group->count() .'">
 			<td>
 				<table class="cmb-nested-table" style="width: 100%;">';
+				if ( $field_group->options( 'group_title' ) ) {
+					echo '
+					<tr class="cmb-group-title">
+						<th colspan="2">
+							', sprintf( '<h4>%1$s</h4>', $field_group->replace_hash( $field_group->options( 'group_title' ) ) ), '
+						<th>
+					</tr>
+					';
+				}
 				// Render repeatable group fields
 				foreach ( array_values( $field_group->args( 'fields' ) ) as $field_args ) {
 					$field_args['show_names'] = $field_group->args( 'show_names' );
@@ -594,7 +617,7 @@ class cmb_Meta_Box {
 				}
 
 				// Get old value
-				$old_val = isset( $old[ $field_group->index ][ $sub_id ] )
+				$old_val = is_array( $old ) && isset( $old[ $field_group->index ][ $sub_id ] )
 					? $old[ $field_group->index ][ $sub_id ]
 					: false;
 
@@ -651,55 +674,6 @@ class cmb_Meta_Box {
 				self::$updated[] = $name;
 			return $field->remove_data();
 		}
-	}
-
-	/**
-	 * Returns a timezone string representing the default timezone for the site.
-	 *
-	 * Roughly copied from WordPress, as get_option('timezone_string') will return
-	 * and empty string if no value has beens set on the options page.
-	 * A timezone string is required by the wp_timezone_choice() used by the
-	 * select_timezone field.
-	 *
-	 * @since  1.0.0
-	 * @return string Timezone string
-	 */
-	public static function timezone_string() {
-		$current_offset = get_option( 'gmt_offset' );
-		$tzstring       = get_option( 'timezone_string' );
-
-		if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists
-			if ( 0 == $current_offset )
-				$tzstring = 'UTC+0';
-			elseif ( $current_offset < 0 )
-				$tzstring = 'UTC' . $current_offset;
-			else
-				$tzstring = 'UTC+' . $current_offset;
-		}
-
-		return $tzstring;
-	}
-
-	/**
-	 * Returns time string offset by timezone
-	 * @since  1.0.0
-	 * @param  string $tzstring Time string
-	 * @return string           Offset time string
-	 */
-	public static function timezone_offset( $tzstring ) {
-		if ( ! empty( $tzstring ) && is_string( $tzstring ) ) {
-			if ( substr( $tzstring, 0, 3 ) === 'UTC' ) {
-				$tzstring = str_replace( array( ':15',':30',':45' ), array( '.25','.5','.75' ), $tzstring );
-				return intval( floatval( substr( $tzstring, 3 ) ) * HOUR_IN_SECONDS );
-			}
-
-			$date_time_zone_selected = new DateTimeZone( $tzstring );
-			$tz_offset = timezone_offset_get( $date_time_zone_selected, date_create() );
-
-			return $tz_offset;
-		}
-
-		return 0;
 	}
 
 	/**
@@ -989,6 +963,82 @@ class cmb_Meta_Box {
 		return update_option( $option_key, $to_save );
 	}
 
+	/**
+	 * Utility method that returns a timezone string representing the default timezone for the site.
+	 *
+	 * Roughly copied from WordPress, as get_option('timezone_string') will return
+	 * and empty string if no value has beens set on the options page.
+	 * A timezone string is required by the wp_timezone_choice() used by the
+	 * select_timezone field.
+	 *
+	 * @since  1.0.0
+	 * @return string Timezone string
+	 */
+	public static function timezone_string() {
+		$current_offset = get_option( 'gmt_offset' );
+		$tzstring       = get_option( 'timezone_string' );
+
+		if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists
+			if ( 0 == $current_offset )
+				$tzstring = 'UTC+0';
+			elseif ( $current_offset < 0 )
+				$tzstring = 'UTC' . $current_offset;
+			else
+				$tzstring = 'UTC+' . $current_offset;
+		}
+
+		return $tzstring;
+	}
+
+	/**
+	 * Utility method that returns time string offset by timezone
+	 * @since  1.0.0
+	 * @param  string $tzstring Time string
+	 * @return string           Offset time string
+	 */
+	public static function timezone_offset( $tzstring ) {
+		if ( ! empty( $tzstring ) && is_string( $tzstring ) ) {
+			if ( substr( $tzstring, 0, 3 ) === 'UTC' ) {
+				$tzstring = str_replace( array( ':15',':30',':45' ), array( '.25','.5','.75' ), $tzstring );
+				return intval( floatval( substr( $tzstring, 3 ) ) * HOUR_IN_SECONDS );
+			}
+
+			$date_time_zone_selected = new DateTimeZone( $tzstring );
+			$tz_offset = timezone_offset_get( $date_time_zone_selected, date_create() );
+
+			return $tz_offset;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Utility method that attempts to get an attachment's ID by it's url
+	 * @since  1.0.0
+	 * @param  string  $img_url Attachment url
+	 * @return mixed            Attachment ID or false
+	 */
+	public static function image_id_from_url( $img_url ) {
+		global $wpdb;
+
+		$img_url = esc_url_raw( $img_url );
+		// Get just the file name
+		if ( false !== strpos( $img_url, '/' ) ) {
+			$explode = explode( '/', $img_url );
+			$img_url = end( $explode );
+		}
+
+		// And search for a fuzzy match of the file name
+		$attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid LIKE '%%%s%%' LIMIT 1;", $img_url ) );
+
+		// If we found an attachement ID, return it
+		if ( !empty( $attachment ) && is_array( $attachment ) )
+			return $attachment[0];
+
+		// No luck
+		return false;
+	}
+
 }
 
 // Handle oembed Ajax
@@ -1028,11 +1078,11 @@ function cmb_get_field( $field_args, $object_id = 0, $object_type = 'post' ) {
  * @since  1.1.0
  * @param  array  $field_args  Field arguments
  * @param  int    $object_id   Object ID
- * @param  string $object_type Type of object being saved. (e.g., post, user, or comment)
+ * @param  string $object_type Type of object being saved. (e.g., post, user, comment, or options-page)
  * @return mixed               Maybe escaped value
  */
 function cmb_get_field_value( $field_args, $object_id = 0, $object_type = 'post' ) {
-	$field = cmb_get_field( $object_id, $field_args, $object_type );
+	$field = cmb_get_field( $field_args, $object_id, $object_type );
 	return $field->escaped_value();
 }
 
@@ -1124,7 +1174,7 @@ function cmb_metabox_form( $meta_box, $object_id, $echo = true ) {
 
 	$form_format = apply_filters( 'cmb_frontend_form_format', '<form class="cmb-form" method="post" id="%s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%s">%s<input type="submit" name="submit-cmb" value="%s" class="button-primary"></form>', $object_id, $meta_box, $form );
 
-	$form = sprintf( $form_format, $meta_box['id'], $object_id, $form, __( 'Save', 'cmb' ) );
+	$form = sprintf( $form_format, $meta_box['id'], $object_id, $form, __( 'Save' ) );
 
 	if ( $echo )
 		echo $form;

@@ -144,7 +144,7 @@ class cmb_Meta_Box_field {
 			? cmb_Meta_Box::get_option( $id, $field_id )
 			: get_metadata( $type, $id, $field_id, ( $single || $repeat ) /* If multicheck this can be multiple values */ );
 
-		if ( $this->group ) {
+		if ( $this->group && $data ) {
 			$data = isset( $data[ $this->group->args( 'count' ) ][ $this->args( '_id' ) ] )
 				? $data[ $this->group->args( 'count' ) ][ $this->args( '_id' ) ]
 				: false;
@@ -369,6 +369,10 @@ class cmb_Meta_Box_field {
 		if ( ! is_admin() && ! $this->args( 'on_front' ) )
 			return;
 
+		// If field is requesting to be conditionally shown
+		if ( is_callable( $this->args( 'show_on_cb' ) ) && ! call_user_func( $this->args( 'show_on_cb' ), $this ) )
+			return;
+
 		$classes    = 'cmb-type-'. sanitize_html_class( $this->type() );
 		$classes   .= ' cmb_id_'. sanitize_html_class( $this->id() );
 		$classes   .= $this->args( 'repeatable' ) ? ' cmb-repeat' : '';
@@ -397,19 +401,23 @@ class cmb_Meta_Box_field {
 
 		echo $this->args( 'before' );
 
-		if ( isset( $_GET['jtdebug'] ) ) {
-			$val = $this->value();
-			if ( is_array( $val ) )
-				echo '<xmp>$val: '. print_r( $val, true ) .'</xmp>';
-			else
-				echo '<p>$val: '. $val .'</p>';
-		}
 		$this_type = new cmb_Meta_Box_types( $this );
 		$this_type->render();
 
 		echo $this->args( 'after' );
 
 		echo "\n\t</td>\n</tr>";
+	}
+
+	/**
+	 * Replaces a hash key - {#} - with the repeatable count
+	 * @since  1.2.0
+	 * @param  string $value Value to update
+	 * @return string        Updated value
+	 */
+	public function replace_hash( $value ) {
+		// Replace hash with 1 based count
+		return str_ireplace( '{#}', ( $this->count() + 1 ), $value );
 	}
 
 	/**
@@ -433,6 +441,8 @@ class cmb_Meta_Box_field {
 			$args['default'] = isset( $args['std'] ) ? $args['std'] : '';
 		}
 		if ( ! isset( $args['preview_size'] ) ) $args['preview_size'] = array( 50, 50 );
+		if ( ! isset( $args['date_format'] ) ) $args['date_format'] = 'm\/d\/Y';
+		if ( ! isset( $args['time_format'] ) ) $args['time_format'] = 'h:i A';
 		// Allow a filter override of the default value
 		$args['default']    = apply_filters( 'cmb_default_filter', $args['default'], $args, $this->object_type, $this->object_type );
 		$args['allow']      = 'file' == $args['type'] && ! isset( $args['allow'] ) ? array( 'url', 'attachment' ) : array();
@@ -459,8 +469,17 @@ class cmb_Meta_Box_field {
 		}
 
 		if ( 'wysiwyg' == $args['type'] ) {
-			$args['id'] = strtolower( str_ireplace( array( '-', '_' ), 'zx', $args['id'] ) ) . 'wpeditor';
+			$args['id'] = strtolower( str_ireplace( '-', '_', $args['id'] ) );
 			$args['options']['textarea_name'] = $args['_name'];
+		}
+
+		$option_types = array( 'taxonomy_select', 'taxonomy_radio', 'taxonomy_radio_inline' );
+		if ( in_array( $args['type'], $option_types, true ) ) {
+
+			// @todo implemention
+			$args['show_option_all'] = isset( $args['show_option_all'] ) && ! $args['show_option_all'] ? false : true;
+			$args['show_option_none'] = isset( $args['show_option_none'] ) && ! $args['show_option_none'] ? false : true;
+
 		}
 
 		return $args;
