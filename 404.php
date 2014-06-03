@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<div id="content">
+<div class="content-wrap">
 	<div id="error404" class="post">
 		<h2>Error 404 File Not Found</h2>
 		<div class="content-loop">

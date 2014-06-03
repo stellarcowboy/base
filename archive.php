@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<div id="content">
+<div class="content-wrap">
 
 	<h1>
 		<?php if ( is_day() ) : ?>

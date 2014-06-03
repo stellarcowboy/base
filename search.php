@@ -1,5 +1,6 @@
 <?php get_header(); ?>
-<div id="content" class="search">
+<div class="content-wrap" class="search">
+
 
 	<h1><?php the_search_query(); ?></h1>
 

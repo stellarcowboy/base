@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div id="content">
+<div class="content-wrap">
 	<h1><?php printf( __( 'Category Archives: %s' ), '<span>' . single_cat_title( '', false ) . '</span>' ); ?></h1>
 	<!-- displays the category's description from the Wordpress admin -->
 	<?php echo category_description(); ?>

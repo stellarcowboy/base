@@ -1,16 +1,16 @@
 <?php get_header(); ?>
-<div id="content">
+<div class="content-wrap">
 	<?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 			<div id="post-<?php the_ID(); ?>" <?php post_class('post'); ?>>
 				<h1><a href="<?php the_permalink() ?>" title="<?php the_title(); ?>" rel="bookmark"><?php the_title(); ?></a></h1>
 				<?php echo '<div class="featured-thumbnail">'; the_post_thumbnail(); echo '</div>'; ?>
 
-					<div id="post-content">
+					<div class="post-content">
 						<?php the_content(); ?>
 						<?php wp_link_pages('before=<div class="pagination">&after=</div>'); ?>
 					</div><!--#post-content-->
 					
-					<div id="post-meta">
+					<div class="post-meta">
 						<p>
 							Posted on <?php the_time('F j, Y'); ?> at <?php the_time() ?>
 						</p>
@@ -30,7 +30,7 @@
 					</div><!--#post-meta-->
 					
 					<!-- If a user fills out their bio info, it's included here -->
-					<div id="post-author">
+					<div class="post-author">
 						<h3>Written by <?php the_author_posts_link() ?></h3>
 						<div id="author-gravatar">
 							<!-- This avatar is the user's gravatar (http://gravatar.com) based on their administrative email address -->

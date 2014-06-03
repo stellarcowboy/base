@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<div id="content">
+<div class="content-wrap">
 
 	<h1><?php printf( __( 'Tag Archives: %s', 'twentyten' ), '<span>' . single_tag_title( '', false ) . '</span>' ); ?></h1>
 	<!-- displays the tag's description from the Wordpress admin -->
