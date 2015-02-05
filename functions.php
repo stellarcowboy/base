@@ -77,6 +77,15 @@
 	}
 	add_action('get_header', 'enable_threaded_comments');	
 
+
+	//Custom thumbnail sizes	
+	/*
+	if ( function_exists( 'add_image_size' ) ) { 
+		add_image_size( 'extra-posts-thumb', 100, 100, true ); //(cropped)
+		add_image_size( 'archive-thumb', 180, 180, true ); //(cropped)
+		}
+	*/
+	
 /*
 // ---------
 // Admin customization 
@@ -117,13 +126,7 @@
 		}
 	}
 	
-	//Custom thumbnail sizes	
-	/*
-	if ( function_exists( 'add_image_size' ) ) { 
-		add_image_size( 'extra-posts-thumb', 100, 100, true ); //(cropped)
-		add_image_size( 'archive-thumb', 180, 180, true ); //(cropped)
-		}
-	*/
+	
 
 	//Add Twitter in Author Profile and remove Yahoo IM, Jabber, AIM
 	function add_twitter_contactmethod( $contactmethods ) {
