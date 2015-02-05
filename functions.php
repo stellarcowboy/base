@@ -8,9 +8,9 @@
 
 	// Load custom functions
 	$functions_path = TEMPLATEPATH . '/func/';
-	//require_once ($functions_path . 'add-meta-boxes.php');
 	//require_once ($functions_path . 'cpt-register.php');
-	//require_once ($functions_path . 'custom-theme-settings.php');
+	require_once ($functions_path . 'WP-SCSS-master/wp-scss.php');
+	
 
 /*
 // ---------

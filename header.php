@@ -13,7 +13,6 @@
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-<div class="wrapper">
 	<div class="section site-header">
 		<div class="section-inner">
 			<?php include('mainnav.php'); ?>
