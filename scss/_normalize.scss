@@ -98,8 +98,6 @@ html {
     @if $legacy_support_for_ie {
         font-size: 100%; // 1
     }
-    width:100%;
-    height:100%;
 	background: $background;
 	color: $color;
     -webkit-text-size-adjust: 100%; // 2
@@ -119,8 +117,6 @@ textarea {
 // Addresses margins handled incorrectly in IE6/7
 
 body {
-	width:100%;
-    height:100%;
     margin: 0;
 }
 
