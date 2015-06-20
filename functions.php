@@ -163,6 +163,7 @@ add_action('_admin_menu', 'remove_editor_menu', 1);
 */
 
 function no_more_jumping($post) {
+	global $post;
 	return '<a href="'.get_permalink($post->ID).'" class="read-more">'.'&nbsp;Read More'.'</a>';
 }
 add_filter('excerpt_more', 'no_more_jumping');
