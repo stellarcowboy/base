@@ -21,3 +21,13 @@
   -webkit-order: $val;
   order: $val;
 }
+
+@mixin flex-wrap($val) {
+  -webkit-flex-wrap: $val;
+  flex-wrap: $val;
+}
+
+//  @include flexbox();
+//  @include flex(1 200px);
+//  @include order(2);
+//  @include flex-wrap(wrap);
