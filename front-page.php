@@ -8,8 +8,7 @@
 					<h1><?php the_title(); ?></h1>
 		
 					<?php edit_post_link('<small>Edit this entry</small>','',''); ?>
-					<?php echo '<div class="featured-t
-					humbnail">'; the_post_thumbnail(); echo '</div>'; ?>
+					<?php echo '<div class="featured-thumbnail">'; the_post_thumbnail(); echo '</div>'; ?>
 		
 					<div class="page-content">
 						<?php the_content(); ?>
