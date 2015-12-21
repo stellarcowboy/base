@@ -9,7 +9,7 @@
 // Load custom functions
 $functions_path = TEMPLATEPATH . '/func/';
 //require_once ($functions_path . 'cpt-register.php');
-require_once ($functions_path . 'WP-SCSS-master/wp-scss.php');
+require_once ($functions_path . 'wp-scss/wp-scss.php');
 
 
 /*
