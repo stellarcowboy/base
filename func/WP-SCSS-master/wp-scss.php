@@ -36,7 +36,7 @@ if (!defined('WPSCSS_PLUGIN_NAME'))
     define('WPSCSS_PLUGIN_NAME', trim(dirname(plugin_basename(__FILE__)), '/'));
 
 if (!defined('WPSCSS_PLUGIN_DIR'))
-    define('WPSCSS_PLUGIN_DIR', '/' . WPSCSS_PLUGIN_NAME);
+    define('WPSCSS_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . WPSCSS_PLUGIN_NAME);
 
 if (!defined('WPSCSS_PLUGIN_URL'))
     define('WPSCSS_PLUGIN_URL', WP_PLUGIN_URL . '/' . WPSCSS_PLUGIN_NAME);
