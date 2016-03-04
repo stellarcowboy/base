@@ -155,11 +155,14 @@ function add_twitter_contactmethod( $contactmethods ) {
 }
 add_filter('user_contactmethods','add_twitter_contactmethod',10,1);
 
-
+// Remove file editor
 function remove_editor_menu() {
 	remove_action('admin_menu', '_add_themes_utility_last', 101);
 }
 add_action('_admin_menu', 'remove_editor_menu', 1);
+
+// Set attachemnt links to default to 'None' instead of default 'Attachment Page'
+update_option('image_default_link_type','none');
 
 /*
 // ---------
